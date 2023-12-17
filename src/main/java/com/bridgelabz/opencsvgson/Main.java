@@ -20,5 +20,8 @@ public class Main {
 
         usersCsvOperations.writeUserDetailsIntoACsvFile(CURRENT_DIRECTORY , WRITE_USERS_CSV_FILE);
 
+        UserJsonOperations userJsonOperations = new UserJsonOperations();
+        userJsonOperations.writeUserObjectsToJsonFile(CURRENT_DIRECTORY , READ_USERS_CSV_FILE , WRITE_USERS_CSV_FILE);
+
     }
 }
