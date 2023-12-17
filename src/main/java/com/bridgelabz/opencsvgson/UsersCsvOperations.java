@@ -1,6 +1,8 @@
 package com.bridgelabz.opencsvgson;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -101,14 +104,59 @@ public class UsersCsvOperations {
                System.out.println("================================");
            }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (CsvValidationException e) {
-            throw new RuntimeException(e);
-        } catch (CsvException e) {
+        } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /*
+     * @desc : Reads user details from a CSV file, parses to beans, and prints.
+     * @param folderPath Path of the folder containing the CSV file.
+     * @param filePath Name of the CSV file.
+     *  @return : void
+     * @throws IOException If an I/O error occurs.
+     */
+    public void readUserFromCsvAndParseToBean(String folderPath , String filePath) throws IOException {
+        try(Reader reader = Files.newBufferedReader(Path.of(folderPath , filePath));){
+            CsvToBean<User> csvToBean = new CsvToBeanBuilder<User>(reader)
+                    .withType(User.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+
+            Iterator<User> csvUserIterator = csvToBean.iterator();
+            while(csvUserIterator.hasNext()){
+                User user = csvUserIterator.next();
+                System.out.println("Name : "+ user.getName());
+                System.out.println("Email : "+ user.getEmail());
+                System.out.println("Phone : "+ user.getPhoneNo());
+                System.out.println("Country : "+ user.getCountry());
+                System.out.println("================================");
+            }
+        }
+    }
+    /*
+     * @desc : Reads all user details from a CSV file at once, parses to beans, and prints.
+     * @param folderPath Path of the folder containing the CSV file.
+     * @param filePath Name of the CSV file.
+     *  @return : void
+     * @throws IOException If an I/O error occurs.
+     */
+
+
+    public void readUserFromCsvAtOnceAndParseToBean(String folderPath , String filePath) throws IOException {
+        try(Reader reader = Files.newBufferedReader(Path.of(folderPath , filePath));){
+            CsvToBean<User> csvToBean = new CsvToBeanBuilder<User>(reader)
+                    .withType(User.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+            for (User user : csvToBean) {
+                System.out.println("Name : " + user.getName());
+                System.out.println("Email : " + user.getEmail());
+                System.out.println("Phone : " + user.getPhoneNo());
+                System.out.println("Country : " + user.getCountry());
+                System.out.println("================================");
+            }
+        }
+    }
 
 }
