@@ -18,5 +18,7 @@ public class Main {
 
         usersCsvOperations.readUserFromCsvAtOnceAndParseToBean(CURRENT_DIRECTORY , READ_USERS_CSV_FILE);
 
+        usersCsvOperations.writeUserDetailsIntoACsvFile(CURRENT_DIRECTORY , WRITE_USERS_CSV_FILE);
+
     }
 }

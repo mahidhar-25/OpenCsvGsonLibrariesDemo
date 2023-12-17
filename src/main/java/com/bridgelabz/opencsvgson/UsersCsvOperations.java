@@ -1,15 +1,21 @@
 package com.bridgelabz.opencsvgson;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -156,6 +162,39 @@ public class UsersCsvOperations {
                 System.out.println("Country : " + user.getCountry());
                 System.out.println("================================");
             }
+        }
+    }
+
+    /*
+     * @desc : Writes user details into a CSV file.
+     * @param folderPath Path of the folder to save the CSV file.
+     * @param filePath Name of the CSV file.
+     *  @return : void
+     * @throws IOException If an I/O error occurs.
+     */
+
+    public void writeUserDetailsIntoACsvFile(String folderPath , String filePath) throws IOException {
+        try(PrintWriter printWriter = new PrintWriter(new FileWriter(new File(folderPath , filePath) , true));){
+            StatefulBeanToCsv<MyUser> statefulBeanToCsvBuilder = new StatefulBeanToCsvBuilder<MyUser>(printWriter)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).withOrderedResults(true).build();
+            // Read the existing CSV file to check if it contains any data
+            boolean fileContainsData = Files.lines(Paths.get(folderPath, filePath)).findAny().isPresent();
+
+            List<MyUser> newUsers = new ArrayList<>();
+
+
+
+            newUsers.add(new MyUser("Mahidhar" , "mahi@gmail.com" , "+91 7894563210", "India"));
+            newUsers.add(new MyUser("Karthik" , "Karthik@gmail.com" , "+91 7894563210", "India"));
+            newUsers.add(new MyUser("sumit" , "sumit@gmail.com" , "+91 7894563210", "India"));
+            System.out.println(newUsers);
+            for(MyUser newUser : newUsers){
+                printWriter.println(newUser.getOrderedString());
+            }
+            statefulBeanToCsvBuilder.write(newUsers);
+
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            throw new RuntimeException(e);
         }
     }
 
